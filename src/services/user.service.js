@@ -1,9 +1,26 @@
+import redis from "../redis.js";
+
 export const getUserFromDB = async (id) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
+  const [username, role] = await redis.hmget(id, 'name', 'role');
+
   return {
     id,
-    name: "John Doe",
-    role: "developer",
+    name: username,
+    role: role,
   };
 };
+
+export const createUser = async (username, role) => {
+  const userId = crypto.randomUUID()
+  
+  const userObject = {
+    name: username,
+    role: role
+  }
+  
+  await redis.hset(userId, userObject)
+
+  return userId
+}

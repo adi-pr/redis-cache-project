@@ -1,6 +1,6 @@
 import express from "express";
 import redis from "../redis.js";
-import { getUserFromDB } from "../services/user.service.js";
+import { getUserFromDB, createUser } from "../services/user.service.js";
 
 const router = new express.Router()
 
@@ -25,6 +25,14 @@ router.get("/user/:id", async (req, res) => {
   await redis.set(key, JSON.stringify(user), "EX", 60)
   
   return res.json(user)
+})
+
+router.post("/user/create", async (req, res) => {
+  const { username, role } = req.body
+
+  const userId = await createUser(username, role)
+
+  res.json({ message: `User Created with ID: ${userId}` })
 })
 
 export default router
