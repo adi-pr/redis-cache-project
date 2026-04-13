@@ -16,6 +16,8 @@ router.get("/user/:id", async (req, res) => {
     return res.json(JSON.parse(cached))
   }
   
+  console.log("CACHE MISSED")
+  
   // Fetch from DB
   const user = await getUserFromDB(id)
   
