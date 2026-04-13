@@ -12,6 +12,15 @@ export const getUserFromDB = async (id) => {
   };
 };
 
+export const updateUserInDB = async (id, username, role) => {
+  const userObject = {
+    name: username,
+    role: role
+  }
+  
+  await redis.hset(id, userObject)
+}
+
 export const createUser = async (username, role) => {
   const userId = crypto.randomUUID()
   

@@ -1,6 +1,6 @@
 import express from "express";
 import redis from "../redis.js";
-import { getUserFromDB, createUser } from "../services/user.service.js";
+import { getUserFromDB, createUser, updateUserInDB } from "../services/user.service.js";
 
 const router = new express.Router()
 
@@ -33,6 +33,17 @@ router.post("/user/create", async (req, res) => {
   const userId = await createUser(username, role)
 
   res.json({ message: `User Created with ID: ${userId}` })
+})
+
+router.post("/user/update/:id", async (req, res) => {
+  const { id } = req.params
+  const { username, role } = req.body
+  
+  await updateUserInDB(id, username, role)
+  // Invalidate cache
+  await redis.del(`user:${id}`)
+  
+  res.json({ message: `User with ID: ${id} updated` })
 })
 
 export default router
